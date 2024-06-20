@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>在庫履歴</title>
+</head>
+<body>
+    <header>
+        <h1>在庫履歴</h1>
+        <nav>
+            <a href="{{ url_for('add_product') }}">商品追加</a>
+            <a href="{{ url_for('products') }}">商品一覧</a>
+            <a href="{{ url_for('add_inventory') }}">在庫の入出庫</a>
+        </nav>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>商品名</th>
+                    <th>ユーザー名</th>
+                    <th>数量</th>
+                    <th>日時</th>
+                    <th>メモ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in inventory_records %}
+                <tr>
+                    <td>{{ record.inventory_id }}</td>
+                    <td>{{ record.product_name }}</td>
+                    <td>{{ record.username }}</td>
+                    <td>{{ record.quantity }}</td>
+                    <td>{{ record.received_date }}</td>
+                    <td>{{ record.note }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

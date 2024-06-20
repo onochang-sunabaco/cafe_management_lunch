@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>在庫の入出庫</title>
+</head>
+<body>
+    <header>
+        <h1>在庫の入出庫</h1>
+        <nav>
+            <a href="{{ url_for('add_product') }}">商品追加</a>
+            <a href="{{ url_for('products') }}">商品一覧</a>
+            <a href="{{ url_for('inventory') }}">在庫履歴</a>
+        </nav>
+    </header>
+    <main>
+        <form method="POST">
+            <label for="product_id">商品</label>
+            <select id="product_id" name="product_id" required>
+                {% for product in products %}
+                <option value="{{ product.product_id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="user_id">ユーザー</label>
+            <select id="user_id" name="user_id" required>
+                {% for user in users %}
+                <option value="{{ user.user_id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="quantity">数量</label>
+            <input type="number" id="quantity" name="quantity" required>
+
+            <label for="note">メモ</label>
+            <input type="text" id="note" name="note">
+
+            <button type="submit">登録</button>
+        </form>
+    </main>
+</body>
+</html>
