@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>在庫履歴編集</title>
+</head>
+<body>
+    <header>
+        <h1>在庫履歴編集</h1>
+        <nav>
+            <a href="{{ url_for('inventory') }}">在庫履歴に戻る</a>
+        </nav>
+    </header>
+    <main>
+        <form action="{{ url_for('edit_inventory', inventory_id=inventory_record['inventory_id']) }}" method="post">
+            <label for="product_id">商品</label>
+            <select name="product_id" id="product_id" required>
+                {% for product in products %}
+                <option value="{{ product['product_id'] }}" {% if product['product_id'] == inventory_record['product_id'] %}selected{% endif %}>
+                    {{ product['name'] }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="user_id">ユーザー</label>
+            <select name="user_id" id="user_id" required>
+                {% for user in users %}
+                <option value="{{ user['user_id'] }}" {% if user['user_id'] == inventory_record['user_id'] %}selected{% endif %}>
+                    {{ user['username'] }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="quantity">数量</label>
+            <input type="number" name="quantity" id="quantity" value="{{ inventory_record['quantity'] }}" required>
+
+            <label for="note">メモ</label>
+            <textarea name="note" id="note">{{ inventory_record['note'] }}</textarea>
+
+            <button type="submit">更新</button>
+        </form>
+    </main>
+</body>
+</html>
