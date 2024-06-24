@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -160,6 +161,25 @@ def delete_inventory(inventory_id):
     conn.close()
     flash('Inventory record deleted successfully!')
     return redirect(url_for('inventory'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        display_name = request.form['display_name']
+        role = request.form['role']
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO USERS (username, password, display_name, role) VALUES (?, ?, ?, ?)",
+                       (username, hashed_password, display_name, role))
+        conn.commit()
+        conn.close()
+        flash('User registered successfully!')
+        return redirect(url_for('register'))
+    return render_template('register.html')     
 
 if __name__ == '__main__':
     app.run(debug=True)
