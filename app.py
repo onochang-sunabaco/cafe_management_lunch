@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -103,6 +103,8 @@ def add_inventory():
 
 @app.route('/inventory')
 def inventory():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("""
@@ -179,7 +181,36 @@ def register():
         conn.close()
         flash('User registered successfully!')
         return redirect(url_for('register'))
-    return render_template('register.html')     
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM USERS WHERE username = ?", (username,))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['user_id']
+            session['username'] = user['username']
+            flash('Login successful!')
+            return redirect(url_for('inventory'))
+        else:
+            flash('Invalid username or password.')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    session.pop('username', None)
+    flash('You have been logged out.')
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
