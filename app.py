@@ -12,6 +12,10 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+@app.route("/")
+def index():
+    return "カフェマネジメントへようこそ！"
+
 @app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
